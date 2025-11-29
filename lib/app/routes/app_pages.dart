@@ -1,3 +1,5 @@
+import 'package:coffee_shop/app/modules/location_experiment/bindings/location_binding.dart';
+import 'package:coffee_shop/app/modules/location_experiment/views/location_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/account/bindings/account_binding.dart';
@@ -64,6 +66,11 @@ class AppPages {
       name: _Paths.PRODUCT_DETAIL,
       page: () => ProductDetailView(product: Get.arguments),
       binding: ProductDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOCATION_EXPERIMENT,
+      page: () => const LocationView(),
+      binding: LocationBinding(),
     ),
   ];
 }

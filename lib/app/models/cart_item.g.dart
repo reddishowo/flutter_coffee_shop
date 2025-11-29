@@ -6,6 +6,7 @@ part of 'cart_item.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
+
 class CartItemAdapter extends TypeAdapter<CartItem> {
   @override
   final int typeId = 1;
@@ -22,13 +23,15 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       price: fields[2] as int,
       imageUrl: fields[3] as String,
       quantity: fields[4] as int,
+      notes: fields[5] == null ? '' : fields[5] as String,
+      option: fields[6] == null ? 'Hot' : fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, CartItem obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +41,11 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       ..writeByte(3)
       ..write(obj.imageUrl)
       ..writeByte(4)
-      ..write(obj.quantity);
+      ..write(obj.quantity)
+      ..writeByte(5)
+      ..write(obj.notes)
+      ..writeByte(6)
+      ..write(obj.option);
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'package:coffee_shop/app/modules/account/views/account_view.dart';
-import 'package:coffee_shop/app/modules/apiexperiment/views/apiexperiment_view.dart';
 import 'package:coffee_shop/app/modules/cart/views/cart_view.dart';
 import 'package:coffee_shop/app/modules/home_tab/views/home_tab_view.dart';
 import 'package:coffee_shop/app/modules/menu/views/menu_view.dart';
@@ -30,7 +29,6 @@ class HomeView extends GetView<HomeController> {
               MenuView(),
               SearchView(),
               AccountView(),
-              ApiexperimentView(),
               CartView(),
             ],
           ),

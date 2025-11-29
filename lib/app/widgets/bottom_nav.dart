@@ -23,7 +23,6 @@ class BottomNav extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.local_cafe), label: 'Menu'),
         BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun'),
-        BottomNavigationBarItem(icon: Icon(Icons.api), label: 'API Test'),
         BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
       ],
     );

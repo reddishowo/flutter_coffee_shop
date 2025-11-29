@@ -11,6 +11,7 @@ abstract class Routes {
   static const APIEXPERIMENT = _Paths.APIEXPERIMENT;
   static const CART = _Paths.CART;
   static const PRODUCT_DETAIL = _Paths.PRODUCT_DETAIL;
+  static const LOCATION_EXPERIMENT = _Paths.LOCATION_EXPERIMENT;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const APIEXPERIMENT = '/apiexperiment';
   static const CART = '/cart';
   static const PRODUCT_DETAIL = '/product-detail';
+  static const LOCATION_EXPERIMENT = '/location-experiment';
 }

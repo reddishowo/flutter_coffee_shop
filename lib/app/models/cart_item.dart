@@ -19,11 +19,19 @@ class CartItem extends HiveObject {
   @HiveField(4)
   int quantity;
 
+  @HiveField(5)
+  String notes;
+
+  @HiveField(6)
+  String option; // "Hot" or "Cool"
+
   CartItem({
     required this.id,
     required this.title,
     required this.price,
     required this.imageUrl,
     this.quantity = 1,
+    this.notes = '',
+    this.option = 'Hot',
   });
 }
