@@ -15,7 +15,7 @@ final List<Product> sampleProducts = [
     id: 2,
     title: 'Matcha Latte',
     subtitle: 'Creamy Green Tea',
-    imageUrl: 'https://unsplash.com/photos/white-ceramic-teacup-filled-of-matcha-tea-Z-hvocTfR_s',
+    imageUrl: '',
     price: 20000,
   ),
   Product(
@@ -43,7 +43,7 @@ final List<Product> sampleProducts = [
     id: 6,
     title: 'Boba Brown Sugar',
     subtitle: 'Chewy & Sweet',
-    imageUrl: 'https://images.unsplash.com/photo-1525695239455-cd27a2d0409d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '',
     price: 25000,
   ),
   Product(
@@ -64,14 +64,14 @@ final List<Product> sampleProducts = [
     id: 9,
     title: 'Caramel Macchiato',
     subtitle: 'Sweet Caramel',
-    imageUrl: 'https://images.unsplash.com/photo-1485808191679-5f8c7c8f31eb?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '',
     price: 15000,
   ),
   Product(
     id: 10,
     title: 'Americano',
     subtitle: 'Strong Black',
-    imageUrl: 'https://images.unsplash.com/photo-1551024601-bec0273e132e?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '',
     price: 15000,
   ),
 ];

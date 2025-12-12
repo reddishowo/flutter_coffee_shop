@@ -1,24 +1,26 @@
-import 'package:coffee_shop/app/modules/location_experiment/bindings/location_binding.dart';
-import 'package:coffee_shop/app/modules/location_experiment/views/location_view.dart';
 import 'package:get/get.dart';
 
-import '../modules/account/bindings/account_binding.dart';
-import '../modules/account/views/account_view.dart';
-import '../modules/apiexperiment/bindings/apiexperiment_binding.dart';
-import '../modules/apiexperiment/views/apiexperiment_view.dart';
-import '../modules/cart/bindings/cart_binding.dart';
-import '../modules/cart/views/cart_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/home_tab/bindings/home_tab_binding.dart';
 import '../modules/home_tab/views/home_tab_view.dart';
 import '../modules/menu/bindings/menu_binding.dart';
 import '../modules/menu/views/menu_view.dart';
-import '../modules/product_detail/bindings/product_detail_binding.dart';
-import '../modules/product_detail/views/product_detail_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
+import '../modules/account/bindings/account_binding.dart';
+import '../modules/account/views/account_view.dart';
+import '../modules/apiexperiment/bindings/apiexperiment_binding.dart';
+import '../modules/apiexperiment/views/apiexperiment_view.dart';
+import '../modules/cart/bindings/cart_binding.dart';
+import '../modules/cart/views/cart_view.dart';
+import '../modules/product_detail/bindings/product_detail_binding.dart';
+import '../modules/product_detail/views/product_detail_view.dart';
+import '../modules/location_experiment/bindings/location_binding.dart';
+import '../modules/location_experiment/views/location_view.dart';
 import '../modules/promo/views/promo_view.dart';
+import '../modules/account/views/edit_profile_view.dart';
+import '../modules/account/views/order_history_view.dart';
 
 part 'app_routes.dart';
 
@@ -76,6 +78,14 @@ class AppPages {
     GetPage(
       name: _Paths.PROMO_NOTIF,
       page: () => const PromoView(), 
+    ),
+    GetPage(
+      name: Routes.EDIT_PROFILE,
+      page: () => const EditProfileView(),
+    ),
+    GetPage(
+      name: Routes.ORDER_HISTORY,
+      page: () => const OrderHistoryView(),
     ),
   ];
 }

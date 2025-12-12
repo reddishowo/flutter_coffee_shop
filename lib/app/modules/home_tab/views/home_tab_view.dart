@@ -1,10 +1,11 @@
-// File: /coffeeshopmobileapp/lib/app/modules/home_tab/views/home_tab_view.dart
+// File: lib/app/modules/home_tab/views/home_tab_view.dart
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_tab_controller.dart';
 import '../../../data/sample_products.dart';
 import '../../../widgets/product_card.dart';
+import '../../../theme/app_theme.dart';
 
 class HomeTabView extends GetView<HomeTabController> {
   const HomeTabView({super.key});
@@ -12,89 +13,164 @@ class HomeTabView extends GetView<HomeTabController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.creamBackground,
       body: SafeArea(
         child: Column(
           children: [
-            // Header Location
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Row(
-                children: [
-                  const Icon(Icons.location_on, color: Colors.black87),
-                  const SizedBox(width: 8),
-                  const Text("Location", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const Spacer(),
-                ],
-              ),
-            ),
+            const SizedBox(height: 10),
             
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Banner Promo
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2C1A06), // Warna banner gelap
-                        borderRadius: BorderRadius.circular(20),
-                        image: const DecorationImage(
-                          image: NetworkImage('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=800&q=60'),
-                          fit: BoxFit.cover,
-                          opacity: 0.4, // Supaya tulisan terbaca
+            // --- 1. SEARCH BAR (Peach Color) ---
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              child: GestureDetector(
+                onTap: () {
+                  // Switch to Search Tab (Index 2 in HomeController)
+                  // Get.find<GetxController>(tag: 'home_controller').update(); 
+                  // Or navigate directly if you prefer: 
+                  Get.toNamed('/search');
+                },
+                child: Container(
+                  height: 55,
+                  decoration: BoxDecoration(
+                    color: AppTheme.peachSearch, // The specific Peach color
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.search, color: Colors.black87, size: 28),
+                      SizedBox(width: 15),
+                      Text(
+                        "Search",
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 20,
+                          fontFamily: 'Serif', // Matching font
+                          fontWeight: FontWeight.w500
                         ),
                       ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 20,
-                            top: 30,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text("DISC", style: TextStyle(color: Colors.white, fontSize: 16)),
-                                const Text("40%", style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  color: Colors.white,
-                                  child: const Text("25rb /cup", style: TextStyle(fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
-                          )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // --- 2. MAIN CONTENT ---
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      
+                      // Location Header
+                      Row(
+                        children: const [
+                          Icon(Icons.location_on, color: AppTheme.brownDark, size: 18),
+                          SizedBox(width: 6),
+                          Text(
+                            "Malang, Indonesia", 
+                            style: TextStyle(
+                              color: Colors.grey, 
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500
+                            )
+                          ),
                         ],
                       ),
-                    ),
+                      
+                      const SizedBox(height: 20),
 
-                    const SizedBox(height: 20),
+                      // Promo Banner (Improved Design)
+                      Container(
+                        height: 160,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          image: const DecorationImage(
+                            image: NetworkImage('https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=800&q=60'),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0,5))
+                          ]
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Get 20% Off\nFirst Order", 
+                                style: TextStyle(
+                                  color: Colors.white, 
+                                  fontFamily: 'Serif', 
+                                  fontSize: 26, 
+                                  fontWeight: FontWeight.bold
+                                )
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.peachSearch,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Text(
+                                  "Promo Code: COFFEE20", 
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87)
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
 
-                    // Grid Produk
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(), // Scroll ikut parent
+                      const SizedBox(height: 25),
+                      
+                      // Section Title
+                      const Text(
+                        "Recommendation",
+                        style: TextStyle(
+                          fontSize: 22, 
+                          fontWeight: FontWeight.bold, 
+                          color: AppTheme.brownDark,
+                          fontFamily: 'Serif'
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+
+                      // Product Grid
+                      GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: sampleProducts.length,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.8,
+                          childAspectRatio: 0.75,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                         ),
                         itemBuilder: (ctx, i) {
-                          final product = sampleProducts[i];
                           return ProductCard(
-                            product: product,
-                            onTap: () {
-                              Get.toNamed('/product-detail', arguments: product);
-                            },
+                            product: sampleProducts[i],
+                            onTap: () => Get.toNamed('/product-detail', arguments: sampleProducts[i]),
                           );
                         },
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,6 +1,9 @@
+// File: lib/app/widgets/product_card.dart
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Add intl to pubspec.yaml if needed for currency
 import '../models/product.dart';
+import '../theme/app_theme.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -10,12 +13,22 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Optional: Format currency
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF8D6E63), // Warna coklat kartu seperti gambar
+          color: AppTheme.brownCard, // Updated to Theme Color
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.brown.withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            )
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -25,6 +38,7 @@ class ProductCard extends StatelessWidget {
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
+                  color: Colors.white, // Background for transparent images
                   image: DecorationImage(
                     image: NetworkImage(product.imageUrl),
                     fit: BoxFit.cover,
@@ -33,7 +47,7 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 children: [
                   Text(
@@ -44,15 +58,20 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 16,
+                      fontFamily: 'Serif', // Added Serif font
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Rp${product.price}",
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    formatter.format(product.price),
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8), 
+                      fontSize: 12,
+                      fontFamily: 'Sans',
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                 ],
               ),
             ),

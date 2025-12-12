@@ -1,128 +1,137 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart'; // Add url_launcher to pubspec.yaml if needed
 import '../controllers/location_controller.dart';
 import '../../../theme/app_theme.dart';
 
 class LocationView extends GetView<LocationController> {
   const LocationView({super.key});
 
+  // Your Coffee Shop Coordinates
+  final LatLng shopLocation = const LatLng(-7.97918829279658, 112.61148768673092);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Eksperimen Lokasi')),
-      body: Column(
+      extendBodyBehindAppBar: true, // Make map go behind app bar
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppTheme.brownDark),
+            onPressed: () => Get.back(),
+          ),
+        ),
+      ),
+      body: Stack(
         children: [
-          // Panel Kontrol Atas (Data & Tombol)
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: Column(
-              children: [
-                // Display Data
-                Obx(() {
-                  final pos = controller.currentPosition.value;
-                  return Card(
-                    color: AppTheme.creamBackground,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        children: [
-                          Text(controller.statusMessage.value, 
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.brownDark)),
-                          const Divider(),
-                          if (pos != null) ...[
-                            _rowDetail("Latitude", "${pos.latitude}"),
-                            _rowDetail("Longitude", "${pos.longitude}"),
-                            _rowDetail("Accuracy", "${pos.accuracy.toStringAsFixed(2)} m"),
-                            _rowDetail("Altitude", "${pos.altitude.toStringAsFixed(2)} m"),
-                            _rowDetail("Speed", "${pos.speed.toStringAsFixed(2)} m/s"),
-                            _rowDetail("Time", DateFormat('HH:mm:ss').format(DateTime.now())),
-                          ] else
-                            const Text("Belum ada data lokasi."),
-                        ],
+          // 1. The Map
+          Obx(() => FlutterMap(
+            mapController: controller.mapController,
+            options: MapOptions(
+              initialCenter: shopLocation, // Center on your shop
+              initialZoom: 15.0,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.coffeeshop.app',
+              ),
+              // Marker Layer
+              MarkerLayer(
+                markers: [
+                  // SHOP MARKER
+                  Marker(
+                    point: shopLocation,
+                    width: 100,
+                    height: 100,
+                    child: Column(
+                      children: const [
+                        Icon(Icons.location_on, color: AppTheme.brownDark, size: 50),
+                        Text("We are here!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  // USER MARKER (If available)
+                  if (controller.currentPosition.value != null)
+                    Marker(
+                      point: LatLng(
+                        controller.currentPosition.value!.latitude,
+                        controller.currentPosition.value!.longitude
+                      ),
+                      width: 60,
+                      height: 60,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.3),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2)
+                        ),
+                        child: const Icon(Icons.my_location, color: Colors.blue, size: 30),
                       ),
                     ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                // Tombol Eksperimen
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: controller.isLoading.value ? null : controller.fetchNetworkLocation,
-                        icon: const Icon(Icons.wifi, size: 18),
-                        label: const Text("Network"),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        onPressed: controller.isLoading.value ? null : controller.fetchGPSLocation,
-                        icon: const Icon(Icons.gps_fixed, size: 18),
-                        label: const Text("GPS"),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        onPressed: controller.startLiveTracking,
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green[100]),
-                        icon: const Icon(Icons.play_arrow, size: 18),
-                        label: const Text("Start Live"),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        onPressed: controller.stopLiveTracking,
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red[100]),
-                        icon: const Icon(Icons.stop, size: 18),
-                        label: const Text("Stop"),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Bagian Peta (OpenStreetMap via flutter_map)
-          Expanded(
-            child: Obx(
-              () => FlutterMap(
-                mapController: controller.mapController,
-                options: MapOptions(
-                  initialCenter: controller.mapCenter.value, // Menggunakan initialCenter di v6
-                  initialZoom: 15.0,
-                ),
+                ],
+              ),
+            ],
+          )),
+
+          // 2. Bottom Info Card
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black12)],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.example.coffeeshop', // Ganti dengan package name Anda
+                  const Text(
+                    "Coffee Shop Malang",
+                    style: TextStyle(fontFamily: 'Serif', fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.brownDark),
                   ),
-                  // Marker posisi saat ini
-                  MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: controller.mapCenter.value,
-                        width: 80,
-                        height: 80,
-                        child: const Icon(
-                          Icons.location_history,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                      ),
+                  const SizedBox(height: 8),
+                  const Row(
+                    children: [
+                      Icon(Icons.map, size: 16, color: Colors.grey),
+                      SizedBox(width: 8),
+                      Expanded(child: Text("Jl. Besar Ijen No. 99, Malang, Jawa Timur", style: TextStyle(color: Colors.black54))),
                     ],
                   ),
-                  // Garis Jejak (Polyline) untuk Live Tracking
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: controller.routePoints.toList(),
-                        strokeWidth: 4.0,
-                        color: Colors.blue,
-                      ),
+                  const SizedBox(height: 8),
+                  const Row(
+                    children: [
+                      Icon(Icons.access_time, size: 16, color: Colors.grey),
+                      SizedBox(width: 8),
+                      Text("Open Daily: 08:00 - 22:00", style: TextStyle(color: Colors.black54)),
                     ],
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                         // Open external Google Maps
+                         _launchMaps();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.brownDark,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      ),
+                      icon: const Icon(Icons.directions, color: Colors.white),
+                      label: const Text("Get Directions", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
                   ),
                 ],
               ),
@@ -133,16 +142,12 @@ class LocationView extends GetView<LocationController> {
     );
   }
 
-  Widget _rowDetail(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
+  void _launchMaps() async {
+    final googleMapsUrl = Uri.parse("https://www.google.com/maps/search/?api=1&query=${shopLocation.latitude},${shopLocation.longitude}");
+    if (await canLaunchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl);
+    } else {
+      Get.snackbar("Error", "Could not open maps");
+    }
   }
 }

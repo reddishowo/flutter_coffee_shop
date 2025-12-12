@@ -1,14 +1,16 @@
-// File: /coffeeshopmobileapp/lib/app/theme/app_theme.dart
+// File: lib/app/theme/app_theme.dart
 
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Warna disesuaikan dengan gambar (Coklat Tua & Krem/Beige)
-  static const Color brownDark = Color(0xFF5D4037); // Coklat tua untuk tombol/header
-  static const Color brownLight = Color(0xFF8D6E63);
-  static const Color creamBackground = Color(0xFFFDFBF7); // Putih gading
-  static const Color beigeAccent = Color(0xFFEAD1B6); // Warna kotak profile/banner
-  
+  // Palette based on the reference style
+  static const Color brownDark = Color(0xFF5D4037); // Dark Coffee
+  static const Color brownCard = Color(0xFF6F4E37); // Card Background
+  static const Color creamBackground = Color(0xFFFDFBF7); // Light Cream
+  static const Color peachSearch = Color(0xFFEFD8C4); // The specific Peach color for Search
+  static const Color beigeAccent = Color(0xFFEAD1B6); 
+
+  // --- LIGHT THEME (Matches the Image) ---
   static final ThemeData lightTheme = ThemeData(
     primaryColor: brownDark,
     scaffoldBackgroundColor: creamBackground,
@@ -16,35 +18,52 @@ class AppTheme {
       primary: brownDark,
       secondary: beigeAccent,
     ),
+    // Text Styling
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontFamily: 'Serif', fontWeight: FontWeight.bold, color: brownDark),
+      titleMedium: TextStyle(fontFamily: 'Serif', fontWeight: FontWeight.bold, color: Colors.white),
+      bodyMedium: TextStyle(fontFamily: 'Roboto', color: Colors.black87),
+    ),
+    // App Bar Styling
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent, // AppBar transparan
+      backgroundColor: Colors.transparent,
       elevation: 0,
-      iconTheme: IconThemeData(color: Colors.black),
-      titleTextStyle: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: beigeAccent, // Default button color
-        foregroundColor: brownDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      centerTitle: true,
+      iconTheme: IconThemeData(color: brownDark),
+      titleTextStyle: TextStyle(
+        color: brownDark, 
+        fontSize: 24, 
+        fontWeight: FontWeight.bold, 
+        fontFamily: 'Serif'
       ),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: beigeAccent,
-      selectedItemColor: brownDark,
-      unselectedItemColor: Colors.black54,
     ),
   );
 
-  // Dark Theme (Opsional, disesuaikan sedikit)
+  // --- DARK THEME (Fixed the error) ---
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: brownDark,
-    scaffoldBackgroundColor: const Color(0xFF2C1A06),
-    appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF2C1A06)),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Color(0xFF1E1E1E),
-      selectedItemColor: beigeAccent,
+    scaffoldBackgroundColor: const Color(0xFF2C1A06), // Very Dark Coffee
+    colorScheme: const ColorScheme.dark().copyWith(
+      primary: brownDark,
+      secondary: beigeAccent,
+    ),
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontFamily: 'Serif', fontWeight: FontWeight.bold, color: beigeAccent),
+      titleMedium: TextStyle(fontFamily: 'Serif', fontWeight: FontWeight.bold, color: Colors.white),
+      bodyMedium: TextStyle(fontFamily: 'Roboto', color: Colors.white70),
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      iconTheme: IconThemeData(color: beigeAccent),
+      titleTextStyle: TextStyle(
+        color: beigeAccent, 
+        fontSize: 24, 
+        fontWeight: FontWeight.bold, 
+        fontFamily: 'Serif'
+      ),
     ),
   );
 }
