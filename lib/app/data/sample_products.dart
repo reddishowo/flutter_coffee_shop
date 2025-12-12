@@ -15,7 +15,7 @@ final List<Product> sampleProducts = [
     id: 2,
     title: 'Matcha Latte',
     subtitle: 'Creamy Green Tea',
-    imageUrl: 'https://images.unsplash.com/photo-1515825838458-f2a94b20105a?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://unsplash.com/photos/white-ceramic-teacup-filled-of-matcha-tea-Z-hvocTfR_s',
     price: 20000,
   ),
   Product(
@@ -29,7 +29,7 @@ final List<Product> sampleProducts = [
     id: 4,
     title: 'Red Velvet Latte',
     subtitle: 'Smooth Texture',
-    imageUrl: 'https://images.unsplash.com/photo-1616486029423-aaa478965c97?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://cdn.discordapp.com/attachments/749435596396691512/1448937579004301383/david-kristianto-foQApm8nhFI-unsplash.jpg?ex=693d13c6&is=693bc246&hm=ff8ddbde81679cc320118f887ddac256e4e1090c6429b5b897a15ef7ff91b3da&',
     price: 20000,
   ),
   Product(

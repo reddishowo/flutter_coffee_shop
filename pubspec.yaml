@@ -56,6 +56,9 @@ dependencies:
   stack_trace: ^1.12.1
   url_launcher: ^6.3.2
   web: ^1.1.1
+  firebase_core: ^4.2.1
+  firebase_messaging: 16.0.4
+  flutter_local_notifications: ^17.2.3
 
 
 dev_dependencies:

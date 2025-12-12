@@ -1,3 +1,18 @@
+// File: /android/build.gradle.kts
+
+// --- TAMBAHKAN BAGIAN INI (Mulai) ---
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Classpath untuk Google Services (Wajib untuk Firebase)
+        classpath("com.google.gms:google-services:4.4.2")
+    }
+}
+// --- TAMBAHKAN BAGIAN INI (Selesai) ---
+
 val buildToolsVersion = "34.0.0"
 
 allprojects {

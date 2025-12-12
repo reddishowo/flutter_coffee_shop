@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "847918291952",
+    "project_id": "thetazinee",
+    "storage_bucket": "thetazinee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847918291952:android:0b96a7dda3a71d88d09b35",
+        "android_client_info": {
+          "package_name": "com.coffeeshop.coffee_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_YEUvw2vc1Fx54ne9tqZ1j5w0pYm1T2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

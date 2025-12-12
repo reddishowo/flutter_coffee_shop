@@ -18,6 +18,7 @@ import '../modules/product_detail/bindings/product_detail_binding.dart';
 import '../modules/product_detail/views/product_detail_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
+import '../modules/promo/views/promo_view.dart';
 
 part 'app_routes.dart';
 
@@ -71,6 +72,10 @@ class AppPages {
       name: _Paths.LOCATION_EXPERIMENT,
       page: () => const LocationView(),
       binding: LocationBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROMO_NOTIF,
+      page: () => const PromoView(), 
     ),
   ];
 }
