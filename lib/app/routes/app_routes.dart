@@ -14,6 +14,9 @@ abstract class Routes {
   static const PROMO_NOTIF = _Paths.PROMO_NOTIF;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
   static const ORDER_HISTORY = _Paths.ORDER_HISTORY;
+  static const WELCOME = _Paths.WELCOME; // Add
+  static const LOGIN = _Paths.LOGIN;     // Add
+  static const SIGNUP = _Paths.SIGNUP;   // Add
 }
 
 abstract class _Paths {
@@ -30,4 +33,7 @@ abstract class _Paths {
   static const PROMO_NOTIF = '/promo-notif';
   static const EDIT_PROFILE = '/edit-profile';
   static const ORDER_HISTORY = '/order-history';
+  static const WELCOME = '/welcome';
+  static const LOGIN = '/login';
+  static const SIGNUP = '/signup';
 }

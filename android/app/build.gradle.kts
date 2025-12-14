@@ -51,5 +51,6 @@ flutter {
 // --- [TAMBAHAN 2] Dependency khusus Desugaring ---
 dependencies {
     // Library ini wajib agar fitur desugaring berjalan
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    // UPDATE: Versi diubah dari 2.0.4 menjadi 2.1.4 sesuai error log
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

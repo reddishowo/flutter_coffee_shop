@@ -1,8 +1,11 @@
+// File: /lib/app/modules/account/views/account_view.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/account_controller.dart';
 import '../../../theme/app_theme.dart';
-import '../../../routes/app_pages.dart'; 
+import '../../../routes/app_pages.dart';
+import '../../../services/auth_service.dart'; // FIXED: Added missing import
 
 class AccountView extends GetView<AccountController> {
   const AccountView({super.key});
@@ -11,6 +14,7 @@ class AccountView extends GetView<AccountController> {
   Widget build(BuildContext context) {
     // Inject controller here to ensure it exists for the bottom nav
     Get.put(AccountController()); 
+    final auth = AuthService.to; 
 
     return Scaffold(
       backgroundColor: AppTheme.creamBackground,
@@ -23,13 +27,26 @@ class AccountView extends GetView<AccountController> {
           child: Column(
             children: [
               // 1. Profile Header
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=5'),
-              ),
-              const SizedBox(height: 10),
-              const Text("Salsa", style: TextStyle(fontSize: 22, fontFamily: 'Serif', fontWeight: FontWeight.bold)),
-              const Text("Coffee Enthusiast", style: TextStyle(color: Colors.grey)),
+              Obx(() {
+                final user = auth.userData;
+                return Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(user['photoUrl'] ?? 'https://i.pravatar.cc/150?img=5'),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      user['name'] ?? "Guest", 
+                      style: const TextStyle(fontSize: 22, fontFamily: 'Serif', fontWeight: FontWeight.bold)
+                    ),
+                    Text(
+                      user['email'] ?? "", 
+                      style: const TextStyle(color: Colors.grey)
+                    ),
+                  ],
+                );
+              }),
               
               const SizedBox(height: 30),
 
@@ -164,7 +181,7 @@ class AccountView extends GetView<AccountController> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => auth.logout(),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.red),
                     padding: const EdgeInsets.symmetric(vertical: 16),

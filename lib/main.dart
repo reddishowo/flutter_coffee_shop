@@ -10,6 +10,7 @@ import 'app/models/cart_item.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/services/notification_service.dart'; 
+import 'app/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ void main() async {
 
   final notificationService = Get.put(NotificationService());
   await notificationService.init();
-
+  Get.put(AuthService()); 
   runApp(MyApp());
 }
 

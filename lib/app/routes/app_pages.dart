@@ -1,3 +1,6 @@
+import 'package:coffee_shop/app/modules/auth/views/login_view.dart';
+import 'package:coffee_shop/app/modules/auth/views/signup_view.dart';
+import 'package:coffee_shop/app/modules/auth/views/welcome_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -86,6 +89,18 @@ class AppPages {
     GetPage(
       name: Routes.ORDER_HISTORY,
       page: () => const OrderHistoryView(),
+    ),
+        GetPage(
+      name: _Paths.WELCOME,
+      page: () => const WelcomeView(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => LoginView(),
+    ),
+    GetPage(
+      name: _Paths.SIGNUP,
+      page: () => SignupView(),
     ),
   ];
 }

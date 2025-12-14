@@ -1,21 +1,21 @@
+// File: /lib/app/services/notification_service.dart
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import '../routes/app_pages.dart';
 
-// Handler untuk Background Message (Harus Top-Level Function)
+// Handler for Background Message (Must be Top-Level Function)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
-  // Kita tidak perlu menampilkan Local Notification di sini secara manual 
-  // karena Firebase SDK otomatis menanganinya jika ada payload 'notification'.
 }
 
 class NotificationService extends GetxService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
-  // ID Channel Android
+  // Android Channel ID
   final AndroidNotificationChannel _androidChannel = const AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
@@ -24,7 +24,6 @@ class NotificationService extends GetxService {
     playSound: true,
     sound: RawResourceAndroidNotificationSound('notif_sound'), // Custom Sound
   );
-
 
   Future<void> init() async {
     // 1. Request Permission
@@ -37,15 +36,13 @@ class NotificationService extends GetxService {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
       
-      // 2. Setup Local Notifications (Untuk Foreground)
+      // 2. Setup Local Notifications (For Foreground)
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
       
-      // Setup iOS/Darwin
+      // Setup iOS/Darwin - FIXED: Removed onDidReceiveLocalNotification
       final DarwinInitializationSettings initializationSettingsDarwin =
-          DarwinInitializationSettings(
-        onDidReceiveLocalNotification: (id, title, body, payload) async {},
-      );
+          DarwinInitializationSettings();
 
       final InitializationSettings initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
@@ -55,14 +52,14 @@ class NotificationService extends GetxService {
       await _localNotifications.initialize(
         initializationSettings,
         onDidReceiveNotificationResponse: (NotificationResponse response) {
-          // Handle klik notifikasi saat aplikasi di Foreground (Local Notif Click)
+          // Handle notification click when app is in Foreground
           if (response.payload != null) {
             _handleMessageNavigation(response.payload!);
           }
         },
       );
 
-      // Buat Channel Android
+      // Create Android Channel
       await _localNotifications
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(_androidChannel);
@@ -72,12 +69,12 @@ class NotificationService extends GetxService {
       // Listener: Background Handler
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-      // Listener: Foreground (Aplikasi sedang dibuka)
+      // Listener: Foreground (App is open)
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         RemoteNotification? notification = message.notification;
         AndroidNotification? android = message.notification?.android;
 
-        // Tampilkan Heads-up Notification manual via Local Notifications
+        // Show Heads-up Notification manually via Local Notifications
         if (notification != null && android != null) {
           _localNotifications.show(
             notification.hashCode,
@@ -100,7 +97,7 @@ class NotificationService extends GetxService {
         }
       });
 
-      // Listener: Opened App (Dari Background/Minimized)
+      // Listener: Opened App (From Background/Minimized)
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         print('A notification was opened form background!');
         if (message.data.isNotEmpty) {
@@ -108,19 +105,19 @@ class NotificationService extends GetxService {
         }
       });
 
-      // Get Token (Untuk testing via Firebase Console)
+      // Get Token (For testing via Firebase Console)
       String? token = await _firebaseMessaging.getToken();
       print("FCM Token: $token");
     }
   }
 
-  // 4. Handle Terminated State (Aplikasi mati total lalu dibuka via notif)
+  // 4. Handle Terminated State (App completely closed then opened via notif)
   Future<void> checkInitialMessage() async {
     RemoteMessage? initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       print('A notification was opened from terminated state!');
       if (initialMessage.data.isNotEmpty) {
-        // Beri sedikit delay agar GetX routing siap
+        // Add slight delay for GetX routing to be ready
         Future.delayed(const Duration(milliseconds: 500), () {
           _handleMessageNavigation(_encodePayload(initialMessage.data));
         });
@@ -128,25 +125,7 @@ class NotificationService extends GetxService {
     }
   }
 
-  // Helper untuk navigasi berdasarkan payload
-  // Contoh payload di Firebase Console (Key-Value): 
-  // route: /product-detail
-  // arg_id: 1
   void _handleMessageNavigation(String payloadString) {
-    // Parsing sederhana string payload key:value
-    // Di real production gunakan jsonEncode/Decode
-    
-    // Asumsi payloadString format: "route:/product-detail,arg_id:1"
-    // Untuk simplifikasi modul ini, kita anggap payload dikirim via data FCM langsung
-    // dan fungsi ini menerima representasi string atau kita parse manual data map.
-    
-    // Kita ubah logika: Parameter function menerima Raw Map Data encoded string?
-    // Mari kita parsing manual Map dari FCM data.
-    
-    // Implementasi Sederhana:
-    // Cek isi string (Encode manual di fungsi pemanggil)
-    // Format simulasi: "route|/product-detail|id|1"
-    
     final parts = payloadString.split('|');
     String? route;
     String? id;
@@ -158,10 +137,6 @@ class NotificationService extends GetxService {
 
     if (route != null) {
       if (route == '/product-detail' && id != null) {
-        // Kita butuh data produk lengkap. 
-        // Untuk simulasi, kita cari dari sampleProducts berdasarkan ID.
-        // Import sample data dulu jika perlu, atau kirim objek dummy.
-        // Di sini kita arahkan ke halaman promo khusus saja untuk mempermudah.
         Get.toNamed(Routes.PROMO_NOTIF, arguments: {'id': id});
       } else {
         Get.toNamed(route);
@@ -170,7 +145,6 @@ class NotificationService extends GetxService {
   }
 
   String _encodePayload(Map<String, dynamic> data) {
-    // Ubah Map ke string sederhana "key|value|key|value" agar bisa masuk payload local notif string
     List<String> buffer = [];
     data.forEach((key, value) {
       buffer.add(key);
