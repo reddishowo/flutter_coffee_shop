@@ -48,7 +48,6 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=public-anon-key
 ```
 
-> Tip: Keep `.env` out of version control by adding it to `.gitignore` if you plan to commit changes.
 
 ## Running Locally
 
