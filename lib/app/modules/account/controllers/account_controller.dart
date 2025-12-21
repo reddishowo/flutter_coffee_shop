@@ -1,21 +1,27 @@
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../services/weather_service.dart';
-import '../../../services/location_service.dart'; // Ensure LocationService is created
+import '../../../services/location_service.dart';
 
 class AccountController extends GetxController {
   final LocationService _locationService = LocationService();
 
   // Observables
-  var weatherTemp = 0.0.obs;
+  var weatherData = <String, dynamic>{}.obs; // Simpan semua data disini
   var isWeatherLoading = false.obs;
   var isWeatherError = false.obs;
-  var locationName = "Loading...".obs; // Dynamic Name
+  var locationName = "Loading...".obs;
+
+  // Getter helper
+  double get temp => weatherData['temp'] ?? 0.0;
+  int get humidity => weatherData['humidity'] ?? 0;
+  double get wind => weatherData['wind'] ?? 0.0;
+  int get weatherCode => weatherData['code'] ?? 0;
 
   @override
   void onInit() {
     super.onInit();
-    fetchWeather(); // Fetch automatically on start
+    fetchWeather();
   }
 
   void fetchWeather() async {
@@ -24,25 +30,21 @@ class AccountController extends GetxController {
     locationName.value = "Detecting Location...";
     
     try {
-      // 1. Get GPS Location
       Position? position = await _locationService.getGPSLocation();
-      // Fallback to Network if GPS fails
       position ??= await _locationService.getNetworkLocation();
 
       if (position != null) {
-        // 2. Fetch Weather for Real Coordinates
-        final temp = await WeatherService.getTemperature(position.latitude, position.longitude);
-        weatherTemp.value = temp;
+        // Ambil Data Lengkap
+        final data = await WeatherService.getWeatherDetails(position.latitude, position.longitude);
+        weatherData.value = data;
 
-        // 3. Logic to update location name
-        // If coordinate is far from Malang (-7.98), show "Current Location"
+        // Logic Nama Lokasi
         if ((position.latitude - -7.98).abs() > 0.1) {
            locationName.value = "Current Location";
         } else {
            locationName.value = "Malang, Indonesia";
         }
       } else {
-        // Location permission denied or service off
         isWeatherError.value = true;
         locationName.value = "Unknown Location";
       }

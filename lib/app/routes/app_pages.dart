@@ -28,6 +28,7 @@ import '../modules/admin/views/add_product_view.dart';
 import '../modules/admin/views/admin_dashboard_view.dart';
 import '../modules/admin/views/manage_product_view.dart';
 import '../modules/admin/views/edit_product_view.dart';
+import '../modules/account/views/weather_detail_view.dart';
 
 
 part 'app_routes.dart';
@@ -114,5 +115,10 @@ class AppPages {
     GetPage(name: Routes.ADMIN_DASHBOARD, page: () => const AdminDashboardView()),
     GetPage(name: Routes.MANAGE_PRODUCT, page: () => const ManageProductView()),
     GetPage(name: Routes.EDIT_PRODUCT, page: () => const EditProductView()),
+    GetPage(
+      name: Routes.WEATHER_DETAIL,
+      page: () => const WeatherDetailView(),
+    ),
   ];
+  
 }

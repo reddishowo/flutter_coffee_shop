@@ -21,6 +21,7 @@ abstract class Routes {
   static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD; // Baru
   static const MANAGE_PRODUCT = _Paths.MANAGE_PRODUCT;   // Baru
   static const EDIT_PRODUCT = _Paths.EDIT_PRODUCT;       // Baru
+  static const WEATHER_DETAIL = _Paths.WEATHER_DETAIL;
 }
 
 abstract class _Paths {
@@ -44,4 +45,5 @@ abstract class _Paths {
   static const ADMIN_DASHBOARD = '/admin-dashboard';
   static const MANAGE_PRODUCT = '/manage-product';
   static const EDIT_PRODUCT = '/edit-product';
+  static const WEATHER_DETAIL = '/weather-detail';
 }

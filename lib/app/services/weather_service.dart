@@ -1,10 +1,37 @@
+// File: /lib/app/services/weather_service.dart
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
   static const String baseUrl = 'https://api.open-meteo.com/v1/forecast';
 
-  // UPDATED: Now requires lat and long
+  // --- [BARU] Mengambil Data Lengkap (Suhu, Angin, Kelembapan, Kode) ---
+  // Digunakan untuk halaman Detail Cuaca
+  static Future<Map<String, dynamic>> getWeatherDetails(double lat, double long) async {
+    final url = Uri.parse(
+      '$baseUrl?latitude=$lat&longitude=$long&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m'
+    );
+    
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final current = data['current'];
+      
+      return {
+        'temp': current['temperature_2m'].toDouble(),
+        'humidity': current['relative_humidity_2m'], // Integer
+        'wind': current['wind_speed_10m'], // Double
+        'code': current['weather_code'], // Integer (WMO code)
+      };
+    } else {
+      throw Exception('Gagal mengambil detail cuaca');
+    }
+  }
+
+  // --- [LAMA] Hanya mengambil Suhu ---
+  // Tetap dipertahankan agar kode lama tidak error
   static Future<double> getTemperature(double lat, double long) async {
     final url = Uri.parse('$baseUrl?latitude=$lat&longitude=$long&current_weather=true');
     final response = await http.get(url);
