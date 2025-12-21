@@ -6,7 +6,6 @@ part of 'cart_item.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-
 class CartItemAdapter extends TypeAdapter<CartItem> {
   @override
   final int typeId = 1;
@@ -18,7 +17,7 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CartItem(
-      id: fields[0] as int,
+      id: fields[0] as String, // UBAH KE String
       title: fields[1] as String,
       price: fields[2] as int,
       imageUrl: fields[3] as String,

@@ -17,6 +17,10 @@ abstract class Routes {
   static const WELCOME = _Paths.WELCOME; // Add
   static const LOGIN = _Paths.LOGIN;     // Add
   static const SIGNUP = _Paths.SIGNUP;   // Add
+  static const ADD_PRODUCT = _Paths.ADD_PRODUCT;
+  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD; // Baru
+  static const MANAGE_PRODUCT = _Paths.MANAGE_PRODUCT;   // Baru
+  static const EDIT_PRODUCT = _Paths.EDIT_PRODUCT;       // Baru
 }
 
 abstract class _Paths {
@@ -36,4 +40,8 @@ abstract class _Paths {
   static const WELCOME = '/welcome';
   static const LOGIN = '/login';
   static const SIGNUP = '/signup';
+  static const ADD_PRODUCT = '/add-product';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const MANAGE_PRODUCT = '/manage-product';
+  static const EDIT_PRODUCT = '/edit-product';
 }

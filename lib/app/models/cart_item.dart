@@ -5,7 +5,7 @@ part 'cart_item.g.dart';
 @HiveType(typeId: 1)
 class CartItem extends HiveObject {
   @HiveField(0)
-  int id;
+  String id; // UBAH DARI int KE String
 
   @HiveField(1)
   String title;
@@ -23,10 +23,10 @@ class CartItem extends HiveObject {
   String notes;
 
   @HiveField(6)
-  String option; // "Hot" or "Cool"
+  String option; 
 
   CartItem({
-    required this.id,
+    required this.id, // Pastikan ini String
     required this.title,
     required this.price,
     required this.imageUrl,

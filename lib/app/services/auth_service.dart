@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import '../routes/app_pages.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends GetxController {
   static AuthService get to => Get.find();
@@ -16,6 +17,7 @@ class AuthService extends GetxController {
   
   // User Data from Firestore
   var userData = <String, dynamic>{}.obs;
+  var localProfilePath = ''.obs; 
 
   @override
   void onReady() {
@@ -25,15 +27,37 @@ class AuthService extends GetxController {
     
     // Listen to user changes to handle routing
     ever(firebaseUser, _setInitialScreen);
+
+        _loadLocalProfileImage(); 
+
+  }
+  Future<void> _loadLocalProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Key-nya unik per user UID agar tidak tertukar jika ganti akun
+    if (_auth.currentUser != null) {
+      String key = 'profile_img_${_auth.currentUser!.uid}';
+      localProfilePath.value = prefs.getString(key) ?? '';
+    }
+  }
+
+  Future<void> updateLocalProfileImage(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_auth.currentUser != null) {
+      String key = 'profile_img_${_auth.currentUser!.uid}';
+      await prefs.setString(key, path);
+      localProfilePath.value = path; // Update UI secara reaktif
+    }
   }
 
   _setInitialScreen(User? user) {
-    if (user == null) {
-      Get.offAllNamed(Routes.WELCOME);
-    } else {
-      fetchUserData();
-      Get.offAllNamed(Routes.HOME);
-    }
+    if (user != null) {
+          fetchUserData();
+          _loadLocalProfileImage(); // Panggil load image saat login
+          Get.offAllNamed(Routes.HOME);
+      } else {
+          localProfilePath.value = ''; // Reset saat logout
+          Get.offAllNamed(Routes.WELCOME);
+      }
   }
 
   Future<void> fetchUserData() async {
@@ -57,21 +81,24 @@ class AuthService extends GetxController {
         password: password,
       );
       
-      // Create User in Firestore
+      // Simpan data user dengan ROLE
       await _db.collection('users').doc(cred.user!.uid).set({
         'name': name,
         'email': email,
+        'role': 'user', // Default user biasa. Ubah ke 'admin' manual di Firebase Console untuk testing
         'phone': '',
-        'photoUrl': 'https://i.pravatar.cc/150?img=5', // Default image
+        'photoUrl': 'https://i.pravatar.cc/150?img=5',
         'createdAt': DateTime.now(),
       });
       
       await cred.user!.updateDisplayName(name);
+      await fetchUserData(); // Refresh data lokal
       
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", e.message ?? "Registration failed", snackPosition: SnackPosition.BOTTOM);
     }
   }
+
 
   // Login
   Future<void> login(String email, String password) async {

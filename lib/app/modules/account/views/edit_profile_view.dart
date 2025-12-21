@@ -1,9 +1,11 @@
+import 'dart:io'; // Import File
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart'; // Import Image Picker
 import '../../../theme/app_theme.dart';
 import '../../../services/auth_service.dart';
 
-// Controller
+// Update Controller
 class EditProfileController extends GetxController {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
@@ -12,10 +14,22 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load current data
     final user = AuthService.to.userData;
     nameController.text = user['name'] ?? '';
     phoneController.text = user['phone'] ?? '';
+  }
+
+  // --- FUNGSI PILIH GAMBAR DARI GALERI ---
+  void pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    // Pilih gambar dari galeri
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      // Simpan path ke Local Storage via AuthService
+      await AuthService.to.updateLocalProfileImage(image.path);
+      Get.snackbar("Sukses", "Foto profil berhasil diganti (Lokal)");
+    }
   }
 
   void saveProfile() async {
@@ -25,18 +39,18 @@ class EditProfileController extends GetxController {
       phoneController.text.trim(),
     );
     isLoading.value = false;
-    Get.back(); // Go back to Account Page
+    Get.back();
   }
 }
 
-// View
+// Update View
 class EditProfileView extends StatelessWidget {
   const EditProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(EditProfileController());
-    final user = AuthService.to.userData;
+    final auth = AuthService.to; // Akses Auth Service
 
     return Scaffold(
       backgroundColor: AppTheme.creamBackground,
@@ -45,22 +59,64 @@ class EditProfileView extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Obx(() => CircleAvatar(
-              radius: 60,
-              backgroundImage: NetworkImage(user['photoUrl'] ?? 'https://i.pravatar.cc/150?img=5'),
-            )),
+            // --- BAGIAN FOTO PROFIL ---
+            GestureDetector(
+              onTap: controller.pickImage, // Klik untuk ganti foto
+              child: Stack(
+                children: [
+                  Obx(() {
+                    // Logika: Cek Lokal dulu, kalau kosong baru cek Firebase, kalau kosong pake default
+                    String localPath = auth.localProfilePath.value;
+                    String? netUrl = auth.userData['photoUrl'];
+
+                    ImageProvider imageProvider;
+                    
+                    if (localPath.isNotEmpty && File(localPath).existsSync()) {
+                      // 1. Pakai File Lokal
+                      imageProvider = FileImage(File(localPath));
+                    } else if (netUrl != null && netUrl.isNotEmpty) {
+                      // 2. Pakai URL Firebase
+                      imageProvider = NetworkImage(netUrl);
+                    } else {
+                      // 3. Default
+                      imageProvider = const NetworkImage('https://i.pravatar.cc/150?img=5');
+                    }
+
+                    return CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: imageProvider,
+                    );
+                  }),
+                  
+                  // Ikon Kamera Kecil
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: AppTheme.brownDark,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 10),
-            const Text("Change Profile Picture (Coming Soon)", style: TextStyle(fontSize: 12, color: Colors.grey)),
+            const Text("Tap picture to change", style: TextStyle(fontSize: 12, color: Colors.grey)),
+            // ---------------------------
             
             const SizedBox(height: 30),
             _buildTextField("Full Name", controller.nameController, Icons.person),
             const SizedBox(height: 20),
-            // Note: Email is usually read-only in simple edits unless re-authenticated
             Container(
               padding: const EdgeInsets.all(16),
               width: double.infinity,
               decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(15)),
-              child: Text("Email: ${user['email']}", style: TextStyle(color: Colors.grey[600])),
+              child: Obx(() => Text("Email: ${auth.userData['email'] ?? ''}", style: TextStyle(color: Colors.grey[600]))),
             ),
             const SizedBox(height: 20),
             _buildTextField("Phone", controller.phoneController, Icons.phone),

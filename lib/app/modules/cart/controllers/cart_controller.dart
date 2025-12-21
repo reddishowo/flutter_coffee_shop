@@ -2,12 +2,15 @@ import 'dart:math'; // Import for random number generation
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Ganti Supabase ke Firestore
 import '../../../models/cart_item.dart';
 import '../../../theme/app_theme.dart';
+import '../../../services/auth_service.dart';
 
 class CartController extends GetxController {
   late Box<CartItem> cartBox;
+  final FirebaseFirestore _db = FirebaseFirestore.instance; // Instance Firestore
+
 
   @override
   void onInit() {
@@ -107,7 +110,7 @@ class CartController extends GetxController {
       final random = Random();
       final orderId = "ORD-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}-${random.nextInt(999)}";
 
-      await _sendToSupabase(orderId);
+      await _saveOrderToFirestore(orderId, method);
       await cartBox.clear();
 
       if (Get.context != null) {
@@ -173,27 +176,36 @@ class CartController extends GetxController {
     });
   }
 
-  Future<void> _sendToSupabase(String orderId) async {
+  Future<void> _saveOrderToFirestore(String orderId, String method) async {
     try {
-      final supabase = Supabase.instance.client;
+      final user = AuthService.to.firebaseUser.value;
+      if (user == null) return;
+
+      // Siapkan data item
       final items = cartBox.values.map((item) => {
         'title': item.title,
         'price': item.price,
-        'image_url': item.imageUrl,
+        'imageUrl': item.imageUrl,
         'quantity': item.quantity,
         'notes': item.notes,
         'option': item.option,
-        'order_id': orderId, // We assume you might want to save this ID too
-        'created_at': DateTime.now().toIso8601String(),
       }).toList();
 
-      if (items.isNotEmpty) {
-        // If your Supabase table doesn't have 'order_id' column, this might error.
-        // You can remove the 'order_id' line above if you haven't updated Supabase schema.
-        await supabase.from('cart').insert(items);
-      }
+      // Simpan satu dokumen Order yang berisi array items
+      await _db.collection('orders').doc(orderId).set({
+        'orderId': orderId,
+        'userId': user.uid, // Penting untuk filter history nanti
+        'userEmail': user.email,
+        'items': items,
+        'totalPrice': totalPrice,
+        'paymentMethod': method,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      
+      print("Order berhasil disimpan ke Firestore");
     } catch (e) {
-      print("Supabase error: $e");
+      print("Firestore error: $e");
+      Get.snackbar("Error", "Gagal menyimpan pesanan ke database");
     }
   }
 }

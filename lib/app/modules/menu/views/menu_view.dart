@@ -2,42 +2,53 @@
 
 import 'package:flutter/material.dart' hide MenuController;
 import 'package:get/get.dart';
-import '../controllers/menu_controller.dart';
-import '../../../data/sample_products.dart';
 import '../../../widgets/product_card.dart';
 import '../../../theme/app_theme.dart';
+import '../../../controllers/product_controller.dart'; // Import controller
 
-class MenuView extends GetView<MenuController> {
+class MenuView extends StatelessWidget { // Bisa StatelessWidget karena pake Obx
   const MenuView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final productController = Get.find<ProductController>();
+
     return Scaffold(
       backgroundColor: AppTheme.creamBackground,
-      appBar: AppBar(
-        title: const Text('All Menu'), // This will pick up the Serif font from AppTheme
-      ),
+      appBar: AppBar(title: const Text('All Menu')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: GridView.builder(
-          padding: const EdgeInsets.only(top: 10, bottom: 20),
-          itemCount: sampleProducts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.75, // Adjusts height of the card
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemBuilder: (ctx, i) {
-            final product = sampleProducts[i];
-            return ProductCard(
-              product: product,
-              onTap: () {
-                Get.toNamed('/product-detail', arguments: product);
-              },
-            );
-          },
-        ),
+        child: Obx(() {
+          // Cek Loading
+          if (productController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
+          // Cek Kosong
+          if (productController.products.isEmpty) {
+            return const Center(child: Text("Belum ada menu tersedia."));
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.only(top: 10, bottom: 20),
+            itemCount: productController.products.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.75,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            itemBuilder: (ctx, i) {
+              final product = productController.products[i];
+              return ProductCard(
+                product: product,
+                onTap: () {
+                  Get.toNamed('/product-detail', arguments: product);
+                },
+              );
+            },
+          );
+        }),
       ),
     );
   }

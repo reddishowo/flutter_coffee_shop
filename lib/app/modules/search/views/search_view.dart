@@ -1,49 +1,39 @@
-// File: lib/app/modules/search/views/search_view.dart
-
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:get/get.dart';
 import '../controllers/search_controller.dart';
 import '../../../widgets/product_card.dart';
-import '../../../data/sample_products.dart';
+// import '../../../data/sample_products.dart'; // HAPUS INI
 import '../../../theme/app_theme.dart';
+import '../../../controllers/product_controller.dart'; // TAMBAH INI
 
 class SearchView extends GetView<SearchController> {
   const SearchView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Ambil Product Controller untuk data produk
+    final productController = Get.find<ProductController>();
+
     return Scaffold(
       backgroundColor: AppTheme.creamBackground,
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 10),
-            // Real Search Input
+            // ... (Bagian TextField Search TETAP SAMA) ...
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: TextField(
-                autofocus: false,
-                style: const TextStyle(fontSize: 18, color: Colors.black87),
-                decoration: InputDecoration(
-                  hintText: 'Search coffee...',
-                  hintStyle: const TextStyle(fontFamily: 'Serif', color: Colors.black45),
-                  prefixIcon: const Icon(Icons.search, color: Colors.black87, size: 28),
-                  filled: true,
-                  fillColor: AppTheme.peachSearch, // Peach background
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none, 
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                ),
+                // ... properti textfield tetap ...
                 onChanged: (val) => controller.setQuery(val),
               ),
             ),
             
-            // Grid Results
+            // Grid Results YANG DIPERBAIKI
             Expanded(
               child: Obx(() {
-                final results = sampleProducts
+                // Filter dari ProductController.products (Firebase Data)
+                final results = productController.products
                     .where((p) => p.title.toLowerCase().contains(controller.query.value.toLowerCase()))
                     .toList();
                     

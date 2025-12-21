@@ -24,6 +24,11 @@ import '../modules/location_experiment/views/location_view.dart';
 import '../modules/promo/views/promo_view.dart';
 import '../modules/account/views/edit_profile_view.dart';
 import '../modules/account/views/order_history_view.dart';
+import '../modules/admin/views/add_product_view.dart'; 
+import '../modules/admin/views/admin_dashboard_view.dart';
+import '../modules/admin/views/manage_product_view.dart';
+import '../modules/admin/views/edit_product_view.dart';
+
 
 part 'app_routes.dart';
 
@@ -102,5 +107,12 @@ class AppPages {
       name: _Paths.SIGNUP,
       page: () => SignupView(),
     ),
+    GetPage(
+      name: Routes.ADD_PRODUCT,
+      page: () => const AddProductView(),
+    ),
+    GetPage(name: Routes.ADMIN_DASHBOARD, page: () => const AdminDashboardView()),
+    GetPage(name: Routes.MANAGE_PRODUCT, page: () => const ManageProductView()),
+    GetPage(name: Routes.EDIT_PRODUCT, page: () => const EditProductView()),
   ];
 }
